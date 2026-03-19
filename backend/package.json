@@ -1,0 +1,24 @@
+{
+  "name": "commit-coach-backend",
+  "version": "2.0.0-beta",
+  "private": true,
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "dev": "node --watch server.js",
+    "start": "node server.js",
+    "lint": "eslint ."
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "jsonwebtoken": "^9.0.2",
+    "express-validator": "^7.0.1",
+    "octokit": "^22.3.2",
+    "@anthropic-ai/sdk": "^0.24.3",
+    "node-cron": "^3.0.3",
+    "pino": "^9.4.0",
+    "pino-http": "^9.0.1"
+  }
+}
