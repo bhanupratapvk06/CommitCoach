@@ -1,0 +1,16 @@
+{
+  "name": "commit-coach",
+  "version": "2.0.0-beta",
+  "private": true,
+  "description": "AI-Powered GitHub Streak Maintenance & Code Improvement Platform",
+  "scripts": {
+    "dev:frontend": "cd frontend && npm run dev",
+    "dev:backend": "cd backend && npm run dev",
+    "dev": "concurrently \"npm run dev:frontend\" \"npm run dev:backend\"",
+    "install:all": "npm install && cd frontend && npm install && cd ../backend && npm install"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "workspaces": []
+}
