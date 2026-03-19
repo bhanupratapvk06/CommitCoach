@@ -1,6 +1,7 @@
 import express from 'express';
 import jwt from 'jsonwebtoken';
 import axios from 'axios';
+import auth from '../middleware/auth.js';
 
 const router = express.Router();
 
@@ -62,13 +63,14 @@ router.get('/callback', async (req, res) => {
 
     const githubUser = userResponse.data;
 
-    // Create JWT payload — include essential GitHub profile fields
+    // Create JWT payload — include essential GitHub profile fields and the GitHub access token
     const payload = {
       githubId: githubUser.id,
       login: githubUser.login,
       name: githubUser.name,
       email: githubUser.email,
       avatar_url: githubUser.avatar_url,
+      githubToken: access_token, // for backend GitHub API calls on behalf of the user
     };
 
     const token = jwt.sign(payload, jwtSecret, { expiresIn: '7d' });
@@ -82,6 +84,15 @@ router.get('/callback', async (req, res) => {
     }
     return res.status(500).json({ error: 'INTERNAL_ERROR', message: 'OAuth callback failed' });
   }
+});
+
+/**
+ * GET /api/v1/me
+ * Returns the authenticated user's JWT payload.
+ * Protected by auth middleware — req.user is set by auth.js.
+ */
+router.get('/me', auth, (req, res) => {
+  res.json(req.user);
 });
 
 export default router;

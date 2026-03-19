@@ -19,6 +19,7 @@
     "@anthropic-ai/sdk": "^0.24.3",
     "node-cron": "^3.0.3",
     "pino": "^9.4.0",
-    "pino-http": "^9.0.1"
+    "pino-http": "^9.0.1",
+    "ioredis": "^5.4.1"
   }
 }

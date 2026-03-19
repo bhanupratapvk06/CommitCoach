@@ -1,4 +1,5 @@
 import { createContext, useReducer, useEffect } from 'react';
+import apiClient from '../lib/apiClient.js';
 
 // Initial state shape
 // {
@@ -45,18 +46,53 @@ export const AuthContext = createContext(null);
 export default function AuthProvider({ children }) {
   const [state, dispatch] = useReducer(authReducer, initialState);
 
-  // On mount, check localStorage for existing token and restore session
+  // On mount, extract token from OAuth callback URL if present, then hydrate user from /me
   useEffect(() => {
-    const storedToken = localStorage.getItem('commit-coach-token');
-    if (storedToken) {
-      // Token exists; we need to fetch user profile to reconstruct full state.
-      // This is a simplified version — in a full implementation we'd decode the JWT
-      // or call a /me endpoint. For now we'll set token and leave user null;
-      // consuming components can handle the hydration flow.
-      dispatch({ type: 'LOGIN_SUCCESS', payload: { user: null, token: storedToken } });
-    } else {
-      dispatch({ type: 'LOGIN_START' }); // Move from 'idle' to a known state; actual auth not present
+    let isMounted = true;
+
+    async function hydrate() {
+      // Step A: Check for token in URL (fresh OAuth callback)
+      const params = new URLSearchParams(window.location.search);
+      const tokenFromUrl = params.get('token');
+      if (tokenFromUrl) {
+        localStorage.setItem('commit-coach-token', tokenFromUrl);
+        // Clean the URL to remove token without causing a navigation
+        window.history.replaceState({}, '', window.location.pathname);
+      }
+
+      // Step B: Check localStorage for token (may have just been saved or from prior session)
+      const storedToken = localStorage.getItem('commit-coach-token');
+
+      if (!storedToken) {
+        if (isMounted) dispatch({ type: 'LOGOUT' });
+        return;
+      }
+
+      // We have a token; show loading while we verify it
+      if (isMounted) dispatch({ type: 'LOGIN_START' });
+
+      // Step C: Call /api/v1/me to get user profile
+      try {
+        const response = await apiClient.get('/api/v1/auth/me');
+        const user = response.data;
+
+        if (isMounted) {
+          dispatch({ type: 'LOGIN_SUCCESS', payload: { user, token: storedToken } });
+        }
+      } catch (error) {
+        // 401 or network error → clear token and logout
+        localStorage.removeItem('commit-coach-token');
+        if (isMounted) {
+          dispatch({ type: 'LOGOUT' });
+        }
+      }
     }
+
+    hydrate();
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   // Persist token to localStorage whenever it changes

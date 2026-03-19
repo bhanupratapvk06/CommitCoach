@@ -1,6 +1,7 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
 import LoginPage from './pages/LoginPage';
 import DashboardPage from './pages/DashboardPage';
+import RepoSelectPage from './pages/RepoSelectPage';
 import ProtectedRoute from './components/layout/ProtectedRoute';
 import ErrorBoundary from './components/ui/ErrorBoundary';
 
@@ -29,6 +30,17 @@ export default function App() {
           <ProtectedRoute>
             <ErrorBoundary fallback={<div>Dashboard failed to load</div>}>
               <DashboardPage />
+            </ErrorBoundary>
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/repos/select"
+        element={
+          <ProtectedRoute>
+            <ErrorBoundary fallback={<div>Repository selection failed to load</div>}>
+              <RepoSelectPage />
             </ErrorBoundary>
           </ProtectedRoute>
         }

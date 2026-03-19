@@ -33,6 +33,7 @@ app.use(express.json());
 
 // Routes
 app.use('/api/v1/auth', import('./routes/auth.js'));
+app.use('/api/v1/repos', import('./routes/repos.js'));
 
 // Health check endpoint (for monitoring)
 app.get('/health', (req, res) => {

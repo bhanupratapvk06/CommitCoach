@@ -12,6 +12,7 @@
 
 Commit Coach is a SaaS platform that helps developers maintain consistent GitHub contribution streaks by combining real-time repository analysis, AI-generated code suggestions, an in-browser code editor with one-click merge, and intelligent scheduled reminders.
 
+
 The platform solves the single biggest obstacle to streak maintenance — not knowing what to commit — by analysing the repositories a user selects and proposing meaningful, context-aware improvements they can apply in minutes. Users choose between receiving step-by-step instructions or a ready-to-merge code patch. In the latter case, the patch is displayed in a Monaco editor directly on the platform, where it can be reviewed, edited, and committed to GitHub without leaving the browser.
 
 ---
@@ -292,6 +293,7 @@ All endpoints are prefixed with `/api/v1`. Authenticated routes require an `Auth
 |---|---|---|---|
 | `GET` | `/auth/github` | Initiate GitHub OAuth 2.0 flow | Public |
 | `GET` | `/auth/callback` | OAuth callback — issues JWT | Public |
+| `GET` | `/auth/me` | Get authenticated user's GitHub profile | JWT |
 | `GET` | `/repos` | List authenticated user's GitHub repos | JWT |
 | `POST` | `/repos/select` | Set the user's watched repo list (max 10) | JWT |
 | `GET` | `/repos/:id/status` | Today's commit status for a repo | JWT |
